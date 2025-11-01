@@ -180,8 +180,11 @@ void getSettingsJS(byte subPage, Print& settingsScript)
       memset(fpass,'*',l);
       char bssid[13];
       fillMAC2Str(bssid, multiWiFi[n].bssid);
-      settingsScript.printf_P(PSTR("addWiFi(\"%s\",\"%s\",\"%s\",0x%X,0x%X,0x%X);"),
+      settingsScript.printf_P(PSTR("addWiFi(\"%u\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",0x%X,0x%X,0x%X);"),
+        multiWiFi[n].encryptionType,
         multiWiFi[n].clientSSID,
+        multiWiFi[n].enterpriseAnonIdentity,
+        multiWiFi[n].enterpriseIdentity,
         fpass,
         bssid,
         (uint32_t) multiWiFi[n].staticIP, // explicit cast required as this is a struct
@@ -392,7 +395,7 @@ void getSettingsJS(byte subPage, Print& settingsScript)
 #ifndef WLED_DISABLE_INFRARED
     printSetFormValue(settingsScript,PSTR("IR"),irPin);
     printSetFormValue(settingsScript,PSTR("IT"),irEnabled);
-#endif    
+#endif
     printSetFormCheckbox(settingsScript,PSTR("MSO"),!irApplyToAllSelected);
   }
 
@@ -438,8 +441,8 @@ void getSettingsJS(byte subPage, Print& settingsScript)
     printSetFormCheckbox(settingsScript,PSTR("EM"),e131Multicast);
     printSetFormValue(settingsScript,PSTR("EU"),e131Universe);
 #ifdef WLED_ENABLE_DMX
-    settingsScript.print(SET_F("hideNoDMX();"));  // hide "not compiled in" message    
-#endif    
+    settingsScript.print(SET_F("hideNoDMX();"));  // hide "not compiled in" message
+#endif
 #ifndef WLED_ENABLE_DMX_INPUT
     settingsScript.print(SET_F("hideDMXInput();"));  // hide "dmx input" settings
 #else
